@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearCompletedBtn = document.getElementById('clear-completed');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const dateDisplay = document.getElementById('date-display');
+    const todoDate = document.getElementById('todo-date');
+    const todoTime = document.getElementById('todo-time');
 
     // --- State ---
     // Load tasks from Local Storage or initialize an empty array
@@ -17,6 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
     displayDate();
     renderTasks();
 
+    // --- Request Notification Permission ---
+    if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+        Notification.requestPermission();
+    }
+
     // --- Event Listeners ---
     
     // Add new task
@@ -26,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (text !== '') {
             addTask(text);
             todoInput.value = '';
+            todoDate.value = '';
+            todoTime.value = '';
         }
     });
 
@@ -82,7 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const newTask = {
             id: Date.now().toString(), // Simple unique ID
             text: text,
-            completed: false
+            completed: false,
+            dueDate: todoDate.value || null,
+            dueTime: todoTime.value || null,
+            notified: false
         };
         tasks.unshift(newTask); // Add to the beginning
         saveAndRender();
@@ -183,7 +195,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="checkbox" ${task.completed ? 'checked' : ''}>
                     <span class="checkmark"></span>
                 </label>
-                <span class="todo-text">${escapeHTML(task.text)}</span>
+                <span class="todo-text">
+                    ${escapeHTML(task.text)}
+                    ${task.dueDate || task.dueTime ? `<br><small style="color: var(--text-muted); font-size: 0.8em; margin-top: 4px; display: inline-block;">⏰ ${task.dueDate || ''} ${task.dueTime || ''}</small>` : ''}
+                </span>
                 <div class="action-btns">
                     <button class="icon-btn edit-btn" aria-label="Edit Task" title="Edit">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -216,5 +231,55 @@ document.addEventListener('DOMContentLoaded', () => {
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
+    }
+
+    // --- Reminder / Alarm Logic ---
+    setInterval(() => {
+        if (tasks.length === 0) return;
+        const now = new Date();
+        const currentDateStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+        const currentTimeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+        let updated = false;
+
+        tasks.forEach(task => {
+            if (!task.completed && !task.notified && task.dueDate && task.dueTime) {
+                if (task.dueDate === currentDateStr && task.dueTime === currentTimeStr) {
+                    triggerAlarm(task.text);
+                    task.notified = true;
+                    updated = true;
+                }
+            }
+        });
+
+        if (updated) {
+            saveAndRender();
+        }
+    }, 30000); // Check every 30 seconds
+
+    function triggerAlarm(taskText) {
+        // Show Notification
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification("To-Do Reminder", {
+                body: `⏰ It's time to: ${taskText}`
+            });
+        }
+        
+        // Play offline beep sound using Web Audio API
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime); // Volume
+            osc.start();
+            setTimeout(() => osc.stop(), 400); // 400ms beep duration
+        } catch (e) {
+            console.log("Audio API not supported in this browser.");
+        }
     }
 });
