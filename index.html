@@ -17,8 +17,10 @@
             <p id="date-display" class="date-display"></p>
         </header>
 
-        <form id="todo-form" class="todo-form">
+        <form id="todo-form" class="todo-form" style="flex-wrap: wrap;">
             <input type="text" id="todo-input" placeholder="What needs to be done?" autocomplete="off" required>
+            <input type="date" id="todo-date" title="Due Date" style="padding: 8px; border-radius: 8px; border: none; outline: none;">
+            <input type="time" id="todo-time" title="Due Time" style="padding: 8px; border-radius: 8px; border: none; outline: none;">
             <button type="submit" id="add-btn" aria-label="Add Task">
                 <!-- Plus icon -->
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
