@@ -3,7 +3,7 @@
 A simple and attractive To-Do application built using HTML, CSS, and JavaScript.
 
 ## 🔗Live Demo
-https://umeshdugganaboina.github.io/todo-app/
+https://umeshdugganaboina.github.io/Todo-APP/
 
 Features
 - Add tasks
