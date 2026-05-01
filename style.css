@@ -1,0 +1,385 @@
+/* =========================================
+   CSS Variables & Reset
+   ========================================= */
+:root {
+    /* Soft pastel/gradient colors */
+    --bg-gradient-start: #ff9a9e;
+    --bg-gradient-end: #fecfef;
+    
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+    --card-border: rgba(255, 255, 255, 0.4);
+    
+    --text-main: #333333;
+    --text-muted: #888888;
+    
+    --primary-color: #ff7e84;
+    --primary-hover: #ff6b72;
+    
+    --danger-color: #ff4d4f;
+    --success-color: #52c41a;
+    
+    --transition: all 0.3s ease;
+    --border-radius: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    color: var(--text-main);
+    padding: 20px;
+}
+
+/* =========================================
+   App Container (Glassmorphism)
+   ========================================= */
+.app-container {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    padding: 30px;
+    overflow: hidden;
+}
+
+/* =========================================
+   Header
+   ========================================= */
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    font-weight: 600;
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.date-display {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* =========================================
+   Form Elements
+   ========================================= */
+.todo-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+#todo-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid transparent;
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: var(--transition);
+    outline: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+#todo-input:focus {
+    border-color: var(--primary-color);
+}
+
+#add-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(255, 126, 132, 0.4);
+}
+
+#add-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+#add-btn:active {
+    transform: translateY(0);
+}
+
+/* =========================================
+   Filters
+   ========================================= */
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 5px 10px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.filter-btn:hover {
+    color: var(--primary-color);
+}
+
+.filter-btn.active {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.filter-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+}
+
+/* =========================================
+   Todo List & Items
+   ========================================= */
+.todo-list {
+    list-style: none;
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-bottom: 20px;
+}
+
+/* Custom Scrollbar */
+.todo-list::-webkit-scrollbar {
+    width: 6px;
+}
+.todo-list::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+    border-radius: 10px;
+}
+.todo-list::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.15);
+    border-radius: 10px;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    animation: fadeIn 0.3s ease;
+    transition: var(--transition);
+}
+
+.todo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.todo-item.completed {
+    background-color: rgba(255,255,255,0.6);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Checkbox Styling */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 15px;
+    position: relative;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    height: 22px;
+    width: 22px;
+    background-color: #eee;
+    border-radius: 50%;
+    transition: var(--transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: var(--success-color);
+}
+
+.checkmark::after {
+    content: "";
+    display: none;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkmark::after {
+    display: block;
+}
+
+/* Task Text */
+.todo-text {
+    flex: 1;
+    font-size: 0.95rem;
+    word-break: break-word;
+    transition: var(--transition);
+}
+
+/* Inline Edit Input */
+.edit-input {
+    flex: 1;
+    font-family: inherit;
+    font-size: 0.95rem;
+    padding: 4px 8px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    outline: none;
+}
+
+/* Action Buttons (Edit, Delete) */
+.action-btns {
+    display: flex;
+    gap: 8px;
+    opacity: 0.6;
+    transition: var(--transition);
+}
+
+.todo-item:hover .action-btns {
+    opacity: 1;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.icon-btn:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.icon-btn.edit-btn:hover {
+    color: var(--primary-color);
+}
+
+.icon-btn.delete-btn:hover {
+    color: var(--danger-color);
+}
+
+/* =========================================
+   Footer
+   ========================================= */
+.app-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.clear-btn {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.clear-btn:hover {
+    color: var(--danger-color);
+    text-decoration: underline;
+}
+
+/* =========================================
+   Empty State
+   ========================================= */
+.empty-state {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* =========================================
+   Responsive Adjustments
+   ========================================= */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 20px;
+        border-radius: 0;
+        min-height: 100vh;
+    }
+    
+    body {
+        padding: 0;
+    }
+}
